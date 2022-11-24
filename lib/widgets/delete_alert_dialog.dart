@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class DeleteAlertDialog extends StatelessWidget {
   final Function deleteHandler;
-  final int index;
+  final String id;
 
   const DeleteAlertDialog(
-      {super.key, required this.deleteHandler, required this.index});
+      {super.key, required this.deleteHandler, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class DeleteAlertDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            deleteHandler(index);
+            deleteHandler(id);
             Navigator.of(context).pop();
           },
           child: const Text("Yes"),

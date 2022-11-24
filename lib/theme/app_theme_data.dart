@@ -5,11 +5,15 @@ class AppThemeData {
     return ThemeData(
       primarySwatch: Colors.indigo,
       textTheme: ThemeData.light().textTheme.copyWith(
-        titleMedium: const TextStyle(
-          fontFamily: 'OpenSans',
-          fontSize: 17,
-        ),
-      ),
+            titleLarge: const TextStyle(
+                fontFamily: 'OpenSans',
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+            titleMedium: const TextStyle(
+              fontFamily: 'OpenSans',
+              fontSize: 17,
+            ),
+          ),
       appBarTheme: const AppBarTheme(
         titleTextStyle: TextStyle(
           fontWeight: FontWeight.bold,

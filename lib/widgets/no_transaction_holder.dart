@@ -5,22 +5,24 @@ class NoTransactionHolder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text(
-          "Nothing to show here",
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        SizedBox(
-          height: 300,
-          child: Image.asset(
-            'assets/images/pngegg.png',
-            fit: BoxFit.fill,
+    return LayoutBuilder(builder: (context, constraints) {
+      return Column(
+        children: [
+          const Text(
+            "Nothing to show here",
           ),
-        ),
-      ],
-    );
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: constraints.maxHeight * 0.6,
+            child: Image.asset(
+              'assets/images/pngegg.png',
+              fit: BoxFit.fill,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

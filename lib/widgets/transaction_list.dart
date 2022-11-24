@@ -7,24 +7,24 @@ import 'no_transaction_holder.dart';
 
 class TransactionList extends StatefulWidget {
   final List<Transaction> transactions;
+  final Function delete;
+  final Function edit;
 
-  const TransactionList({super.key, required this.transactions});
+  const TransactionList(
+      {super.key,
+      required this.transactions,
+      required this.delete,
+      required this.edit});
 
   @override
   State<TransactionList> createState() => _TransactionListState();
 }
 
 class _TransactionListState extends State<TransactionList> {
-  void _deleteTransaction(int index) {
-    setState(() {
-      widget.transactions.removeAt(index);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400,
+      height: MediaQuery.of(context).size.height * 0.6,
       child: widget.transactions.isEmpty
           ? const NoTransactionHolder()
           : ListView.builder(
@@ -68,19 +68,22 @@ class _TransactionListState extends State<TransactionList> {
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: null,
+                            onPressed: () =>
+                                widget.edit(widget.transactions[index].id),
                             icon: Icon(Icons.edit),
+                            color: Colors.green,
                           ),
                           IconButton(
                             onPressed: () => showDialog(
                               context: context,
                               builder: (BuildContext context) =>
                                   DeleteAlertDialog(
-                                deleteHandler: _deleteTransaction,
-                                index: index,
+                                deleteHandler: widget.delete,
+                                id: widget.transactions[index].id,
                               ),
                             ),
-                            icon: Icon(Icons.delete),
+                            icon: const Icon(Icons.delete),
+                            color: Theme.of(context).errorColor,
                           ),
                         ],
                       ),
