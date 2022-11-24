@@ -32,23 +32,26 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      margin: const EdgeInsets.all(20),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: groupedTransactionsValues.map((data) {
-            return Flexible(
-              fit: FlexFit.tight,
-              child: ChartBar(
-                  label: data['day'],
-                  amount: data['amount'],
-                  ofTotal:
-                      totalSpending == 0 ? 0.0 : data['amount'] / totalSpending),
-            );
-          }).toList(),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.4,
+      child: Card(
+        elevation: 6,
+        margin: const EdgeInsets.all(20),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: groupedTransactionsValues.map((data) {
+              return Flexible(
+                fit: FlexFit.tight,
+                child: ChartBar(
+                    label: data['day'],
+                    amount: data['amount'],
+                    ofTotal:
+                        totalSpending == 0 ? 0.0 : data['amount'] / totalSpending * 2),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );

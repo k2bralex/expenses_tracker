@@ -1,9 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+import '../models/transaction.dart';
+
 class NewTransaction extends StatefulWidget {
-  const NewTransaction({super.key, required this.addHandler});
+  NewTransaction({super.key, required this.addHandler, Transaction? edited}) {
+    this.edited = edited;
+  }
+
+  Transaction? edited;
 
   final Function addHandler;
 
@@ -12,9 +21,21 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final _titleController = TextEditingController();
-  final _amountController = TextEditingController();
+  late var _titleController = TextEditingController();
+  late var _amountController = TextEditingController();
   DateTime? _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.edited != null) {
+      _titleController = TextEditingController(text: widget.edited!.title);
+      _amountController =
+          TextEditingController(text: widget.edited!.amount.toString());
+      _selectedDate = widget.edited!.date;
+      print(_selectedDate.toString());
+    }
+  }
 
   void _submit() {
     final newTitle = _titleController.text;
@@ -47,57 +68,70 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Title'),
-              keyboardType: TextInputType.text,
-              controller: _titleController,
-              onSubmitted: (_) => _submit(),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Amount'),
-              controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
-              ],
-            ),
-            SizedBox(
-              height: 70,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    _selectedDate == null
-                        ? 'No date chosen!'
-                        : 'Picked data: ${DateFormat().add_yMd().format(_selectedDate!)}',
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.purple),
-                    ),
-                    onPressed: _presentDayPicker,
-                    child: const Text(
-                      'Choose Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 30),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: 'Title'),
+                keyboardType: TextInputType.text,
+                controller: _titleController,
+                onSubmitted: (_) => _submit(),
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: 'Amount'),
+                controller: _amountController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))
                 ],
               ),
-            ),
-            ElevatedButton(
-              onPressed: _submit,
-              child: const Text('Add transaction'),
-            ),
-          ],
+              SizedBox(
+                height: 70,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _selectedDate == null
+                          ? 'No date chosen!'
+                          : 'Picked data: ${DateFormat().add_yMd().format(_selectedDate!)}',
+                    ),
+                    Platform.isIOS
+                        ? CupertinoButton(
+                            onPressed: _presentDayPicker,
+                            child: const Text(
+                              'Choose Date',
+                            ),
+                          )
+                        : TextButton(
+                            style: ButtonStyle(
+                              foregroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.purple),
+                            ),
+                            onPressed: _presentDayPicker,
+                            child: const Text(
+                              'Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+              Platform.isIOS ? CupertinoButton.filled(onPressed: _submit, child: const Text('Add transaction')) : ElevatedButton(
+                onPressed: _submit,
+                child: const Text('Add transaction'),
+              ),
+            ],
+          ),
         ),
       ),
     );
